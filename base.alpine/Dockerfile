@@ -4,16 +4,16 @@ ENV \
     TERM=xterm-color           \
     DINIT_VERSION=1.2.1        \
     TIME_ZONE=America/Chicago  \
-    MYUSER=umputun             \
+    MYUSER=app                 \
     MYUID=1001                 \
     DOCKER_GID=999         
 
 COPY files/scripts/nop.sh /usr/bin/nop.sh
-COPY files/scripts/umputun /usr/bin/umputun
+COPY files/scripts/app.sh /usr/bin/app.sh
 COPY files/init.sh /init.sh
 
 RUN \
-    chmod +x /usr/bin/nop.sh /usr/bin/umputun /init.sh && \
+    chmod +x /usr/bin/nop.sh /usr/bin/app.sh /init.sh && \
     apk add --no-cache --update su-exec tzdata curl openssl && \
     ln -s /sbin/su-exec /usr/local/bin/gosu && \
     mkdir -p /home/$MYUSER && \

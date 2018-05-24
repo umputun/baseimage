@@ -11,4 +11,4 @@ if [[ $EUID -ne 0 ]]; then
    exec /bin/bash
 fi
 
-su umputun
+su app
