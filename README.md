@@ -1,6 +1,6 @@
-# baseimage [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/umputun/baseimage/)
+# baseimage [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/umputun/baseimage/) [![Build Status](https://travis-ci.org/umputun/baseimage.svg?branch=master)](https://travis-ci.org/umputun/baseimage)
 
-_minimalistic docker base image to build and deploy my services and applications._
+_minimalist docker base image to build and deploy my services and applications._
 
 Two images included:
 
