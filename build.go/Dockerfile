@@ -10,6 +10,7 @@ RUN go version
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
+ENV GOLANGCILINT=1.5
 
 RUN \
     go get -u github.com/golang/dep/cmd/dep && \
@@ -20,6 +21,13 @@ RUN \
     go get -u gopkg.in/alecthomas/gometalinter.v2 && \
     ln -s /go/bin/gometalinter.v2 /go/bin/gometalinter && \
     gometalinter --install --force
+
+ADD https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT}/golangci-lint-${GOLANGCILINT}-linux-amd64.tar.gz /tmp/golangci-lint.tar.gz
+
+RUN \
+ cd /tmp && tar -zxf /tmp/golangci-lint.tar.gz && \
+ mv /tmp/golangci-lint-${GOLANGCILINT}-linux-amd64/golangci-lint /go/bin/golangci-lint && \
+ chmod +x /go/bin/golangci-lint
 
 
 ADD coverage.sh /script/coverage.sh
