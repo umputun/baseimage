@@ -12,7 +12,7 @@ if [ "$#" -eq  "0" ] ; then
 else
     app=$1
 fi
-echo "ganerate coverage for $app"
+echo "generate coverage for $app"
 
 generate_cover_data() {
     rm -rf "$workdir"
