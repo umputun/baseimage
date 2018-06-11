@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # parse git revision without .git/object
-set -e
 
 # .git/HEAD with linke like "ref: refs/heads/master"
 head_full=$(cat .git/HEAD)
