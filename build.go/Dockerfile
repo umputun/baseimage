@@ -32,7 +32,8 @@ RUN \
 
 ADD coverage.sh /script/coverage.sh
 ADD checkvendor.sh /script/checkvendor.sh
+ADD git-rev.sh /script/git-rev.sh
 
 RUN \
-    chmod +x /script/coverage.sh /script/checkvendor.sh && \
+    chmod +x /script/coverage.sh /script/checkvendor.sh /script/git-rev.sh && \
     ln -s /script/checkvendor.sh $GOPATH/bin/checkvendor
