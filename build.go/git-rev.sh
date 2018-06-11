@@ -19,6 +19,6 @@ short_hash=${full_hash:0:7}
 # get time stamp
 log=$(tail -n1 .git/logs/$ref)
 log_elems=(${log// / })
-ts=$(date -r "${log_elems[4]}" +'%Y%m%dT%H:%M:%S')
+ts=$(date -d "${log_elems[4]}" +'%Y%m%dT%H:%M:%S')
 
 echo $head-$short_hash-$ts
