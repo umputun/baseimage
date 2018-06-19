@@ -18,6 +18,7 @@ RUN \
     go get -u github.com/mattn/goveralls && \
     go get -u github.com/jteeuwen/go-bindata/... && \
     go get -u github.com/stretchr/testify && \
+    go get -u github.com/vektra/mockery/.../ && \
     go get -u gopkg.in/alecthomas/gometalinter.v2 && \
     ln -s /go/bin/gometalinter.v2 /go/bin/gometalinter && \
     gometalinter --install --force
@@ -25,9 +26,9 @@ RUN \
 ADD https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT}/golangci-lint-${GOLANGCILINT}-linux-amd64.tar.gz /tmp/golangci-lint.tar.gz
 
 RUN \
- cd /tmp && tar -zxf /tmp/golangci-lint.tar.gz && \
- mv /tmp/golangci-lint-${GOLANGCILINT}-linux-amd64/golangci-lint /go/bin/golangci-lint && \
- chmod +x /go/bin/golangci-lint
+    cd /tmp && tar -zxf /tmp/golangci-lint.tar.gz && \
+    mv /tmp/golangci-lint-${GOLANGCILINT}-linux-amd64/golangci-lint /go/bin/golangci-lint && \
+    chmod +x /go/bin/golangci-lint
 
 
 ADD coverage.sh /script/coverage.sh

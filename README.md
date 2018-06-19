@@ -15,7 +15,7 @@ Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dock
 * Enforces `CGO_ENABLED=0` and `GOARCH=amd64`
 * Adds vendor tool [dep](https://github.com/golang/dep) and [govendor](https://github.com/kardianos/govendor)
 * With fully installed and ready to use linters [gometalinter](https://github.com/alecthomas/gometalinter) and [golangci-lint](https://github.com/golangci/golangci-lint)
-* Add useful packages for building and testing - [testify](https://github.com/stretchr/testify) and [go-bindata](https://github.com/jteeuwen/go-bindata)
+* Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [go-bindata](https://github.com/jteeuwen/go-bindata)
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
 * `git-rev.sh` script to make git-based version without full `.git` copied (works without `.git/objects`)
 
