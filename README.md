@@ -51,4 +51,4 @@ Image `umputun/baseimage:app-latest` designed as a lightweight, ready-to-use bas
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
 * Optionally runs `/srv/init.sh` if provided by custom container
 * Packages `tzdata`, `curl` and `openssl`
-* Runs `CMD` under `app` user (uid=1001)
+* Adds user `app` (uid=1001)
