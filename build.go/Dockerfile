@@ -11,24 +11,29 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
 ENV GOLANGCILINT=1.5
+ENV GOMETALINTER=2.0.11
+
 
 RUN \
-    go get -u github.com/golang/dep/cmd/dep && \
-    go get -u github.com/kardianos/govendor && \
-    go get -u github.com/mattn/goveralls && \
-    go get -u github.com/jteeuwen/go-bindata/... && \
-    go get -u github.com/stretchr/testify && \
-    go get -u github.com/vektra/mockery/.../ && \
-    go get -u gopkg.in/alecthomas/gometalinter.v2 && \
-    ln -s /go/bin/gometalinter.v2 /go/bin/gometalinter && \
-    gometalinter --install --force
+    go get -u -v github.com/alecthomas/gometalinter && \
+    cd /go/src/github.com/alecthomas/gometalinter && \
+    git checkout v${GOMETALINTER} && \
+    go install github.com/alecthomas/gometalinter && \
+    gometalinter --install 
 
 ADD https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCILINT}/golangci-lint-${GOLANGCILINT}-linux-amd64.tar.gz /tmp/golangci-lint.tar.gz
-
 RUN \
     cd /tmp && tar -zxf /tmp/golangci-lint.tar.gz && \
-    mv /tmp/golangci-lint-${GOLANGCILINT}-linux-amd64/golangci-lint /go/bin/golangci-lint && \
+    mv /tmp/golangci-lint-${GOLANGCILINT}-linux-amd64/golangci-lint /go/bin/golangci-lint &&\
     chmod +x /go/bin/golangci-lint
+
+RUN \
+    go get -u -v github.com/golang/dep/cmd/dep && \
+    go get -u -v github.com/kardianos/govendor && \
+    go get -u -v github.com/mattn/goveralls && \
+    go get -u -v github.com/jteeuwen/go-bindata/... && \
+    go get -u -v github.com/stretchr/testify && \
+    go get -u -v github.com/vektra/mockery/.../
 
 
 ADD coverage.sh /script/coverage.sh
