@@ -4,7 +4,8 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
 ENV GOMETALINTER=2.0.11
-ENV GOVERALLS=v0.0.2
+ENV GOVERALLS=0.0.2
+ENV GOLANGCI=1.12.3
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
@@ -26,9 +27,17 @@ RUN \
     go get -u -v github.com/vektra/mockery/.../
 
 RUN \
+    go get -u -v github.com/golangci/golangci-lint/cmd/golangci-lint && \
+    cd /go/src/github.com/golangci/golangci-lint && \
+    git checkout v${GOLANGCI} && \
+    cd /go/src/github.com/golangci/golangci-lint/cmd/golangci-lint && \
+    go install -ldflags "-X 'main.version=$(git describe --tags)' -X 'main.commit=$(git rev-parse --short HEAD)' -X 'main.date=$(date)'" && \
+    golangci-lint --version
+
+RUN \
     go get -u -v github.com/mattn/goveralls && \
     cd /go/src/github.com/mattn/goveralls && \
-    git checkout $GOVERALLS && \
+    git checkout v${GOVERALLS} && \
     go install github.com/mattn/goveralls
 
 ADD coverage.sh /script/coverage.sh
