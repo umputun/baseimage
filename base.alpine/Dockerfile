@@ -2,7 +2,6 @@ FROM alpine:3.8
 
 ENV \
     TERM=xterm-color           \
-    DINIT_VERSION=1.2.1        \
     TIME_ZONE=America/Chicago  \
     MYUSER=app                 \
     MYUID=1001                 \
@@ -14,7 +13,7 @@ COPY files/init.sh /init.sh
 
 RUN \
     chmod +x /usr/bin/nop.sh /usr/bin/app.sh /init.sh && \
-    apk add --no-cache --update su-exec tzdata curl openssl && \
+    apk add --no-cache --update su-exec tzdata curl ca-certificates dumb-init && \
     ln -s /sbin/su-exec /usr/local/bin/gosu && \
     mkdir -p /home/$MYUSER && \
     adduser -s /bin/sh -D -u $MYUID $MYUSER && chown -R $MYUSER:$MYUSER /home/$MYUSER && \
@@ -23,8 +22,7 @@ RUN \
     mkdir -p /srv && chown -R $MYUSER:$MYUSER /srv && \
     cp /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && \
     echo "${TIME_ZONE}" > /etc/timezone && date && \
-    wget -q https://github.com/Yelp/dumb-init/releases/download/v${DINIT_VERSION}/dumb-init_${DINIT_VERSION}_amd64 -O /sbin/dinit && \
-    chmod +x /sbin/dinit && \
+    ln -s /usr/bin/dumb-init /sbin/dinit && \
     rm -rf /var/cache/apk/*
 
 ENTRYPOINT ["/init.sh"]
