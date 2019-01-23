@@ -3,9 +3,9 @@ FROM golang:1.11-alpine
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
-ENV GOMETALINTER=2.0.11
+ENV GOMETALINTER=2.0.12
 ENV GOVERALLS=0.0.2
-ENV GOLANGCI=1.12.3
+ENV GOLANGCI=1.13
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
@@ -41,6 +41,7 @@ RUN \
     go install github.com/mattn/goveralls
 
 ADD coverage.sh /script/coverage.sh
+ADD checkvendor.sh /script/checkvendor.sh
 ADD git-rev.sh /script/git-rev.sh
 
-RUN chmod +x /script/coverage.sh /script/git-rev.sh
+RUN chmod +x /script/coverage.sh /script/checkvendor.sh /script/git-rev.sh
