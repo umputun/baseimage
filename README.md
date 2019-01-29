@@ -22,7 +22,7 @@ Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dock
 ### Example of Dockerfile from baseimage:buildgo 
 
 ```docker
-ROM umputun/baseimage:buildgo-latest as build-backend
+FROM umputun/baseimage:buildgo-latest as build-backend
 
 WORKDIR /go/src/github.com/umputun/remark
 
