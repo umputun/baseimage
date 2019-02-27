@@ -1,11 +1,13 @@
-FROM golang:1.11-alpine
+FROM golang:1.12-alpine
 
-ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
-ENV GOMETALINTER=2.0.12
-ENV GOVERALLS=0.0.2
-ENV GOLANGCI=1.13
+ENV \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOMETALINTER=2.0.12 \
+    GOVERALLS=0.0.2 \
+    GOLANGCI=1.15.0 \
+    STATIK=0.1.5
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
@@ -39,6 +41,12 @@ RUN \
     cd /go/src/github.com/mattn/goveralls && \
     git checkout v${GOVERALLS} && \
     go install github.com/mattn/goveralls
+
+RUN \
+    go get -u -v github.com/rakyll/statik && \
+    cd /go/src/github.com/rakyll/statik && \
+    git checkout v${STATIK} && \
+    go install github.com/rakyll/statik
 
 ADD coverage.sh /script/coverage.sh
 ADD checkvendor.sh /script/checkvendor.sh
