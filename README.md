@@ -19,36 +19,53 @@ Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dock
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
 * `git-rev.sh` script to make git-based version without full `.git` copied (works without `.git/objects`)
 
-### Example of Dockerfile from baseimage:buildgo 
-
-```docker
-FROM umputun/baseimage:buildgo-latest as build-backend
-
-WORKDIR /go/src/github.com/umputun/remark
-
-ADD app /go/src/github.com/umputun/remark/app
-ADD vendor /go/src/github.com/umputun/remark/vendor
-ADD .git /go/src/github.com/umputun/remark/.git
-
-RUN cd app && go test ./...
-
-RUN gometalinter --disable-all --deadline=300s --vendor --enable=vet --enable=vetshadow --enable=golint \
-    --enable=staticcheck --enable=ineffassign --enable=goconst --enable=errcheck --enable=unconvert \
-    --enable=deadcode  --enable=gosimple --enable=gas --exclude=test --exclude=mock --exclude=vendor ./...
-
-RUN mkdir -p target && /script/coverage.sh
-
-RUN \
-    version=$(/script/git-rev.sh) && \
-    echo "version $version" && \  
-    go build -o remark -ldflags "-X main.revision=${version} -s -w" ./app
-```
 
 ## Base Application Image
 
-Image `umputun/baseimage:app-latest` designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
+Image `umputun/baseimage:app-latest` designed as a lightweight, ready-to-use base for various services.
+It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
 
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
+* Container command runs under `app` user with uid `$APP_UID` (default 1001) 
 * Optionally runs `/srv/init.sh` if provided by custom container
-* Packages `tzdata`, `curl` and `openssl`
-* Adds user `app` (uid=1001)
+* Packages `tzdata`, `curl`, `su-exec`, `ca-certificates` and `openssl` pre-installed
+* Adds the user `app` (uid=1001)
+
+### Run-time Customization
+
+The container can be customized in runtime by setting environment from docker's command line or as a part of `docker-compose.yml`
+
+- `TIME_ZONE` - set container's TZ, default "America/Chicago"
+- `APP_UID` - UID of internal `app` user, default 1001
+
+## Example of multi-stage Dockerfile with baseimage:buildgo and baseimage:app
+
+```docker
+FROM umputun/baseimage:buildgo as build
+
+WORKDIR /build
+ADD . /build
+
+RUN go test -mod=vendor ./...
+RUN golangci-lint run --out-format=tab --tests=false ./...
+
+RUN \
+    revison=$(/script/git-rev.sh) && \
+    echo "revision=${revison}" && \
+    go build -mod=vendor -o app -ldflags "-X main.revision=$revison -s -w" .
+
+
+FROM umputun/baseimage:app
+
+COPY --from=build /build/app /srv/app
+
+EXPOSE 8080
+WORKDIR /srv
+
+CMD ["/srv/app", "param1", "param2]
+```
+
+It will make a container running "/srv/app" (with passed params) under 'app' user.
+
+To customize both TIME_ZONE and UID - `docker run -e TIME_ZONE=America/New_York -e APP_UID=2000 <image>`
+ 

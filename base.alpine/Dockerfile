@@ -1,10 +1,12 @@
 FROM alpine:3.9
 
+LABEL maintainer="Umputun <umputun@gmail.com>"
+
 ENV \
     TERM=xterm-color           \
     TIME_ZONE=America/Chicago  \
-    MYUSER=app                 \
-    MYUID=1001                 \
+    APP_USER=app                 \
+    APP_UID=1001                 \
     DOCKER_GID=999         
 
 COPY files/scripts/nop.sh /usr/bin/nop.sh
@@ -15,11 +17,11 @@ RUN \
     chmod +x /usr/bin/nop.sh /usr/bin/app.sh /init.sh && \
     apk add --no-cache --update su-exec tzdata curl ca-certificates dumb-init && \
     ln -s /sbin/su-exec /usr/local/bin/gosu && \
-    mkdir -p /home/$MYUSER && \
-    adduser -s /bin/sh -D -u $MYUID $MYUSER && chown -R $MYUSER:$MYUSER /home/$MYUSER && \
+    mkdir -p /home/$APP_USER && \
+    adduser -s /bin/sh -D -u $APP_UID $APP_USER && chown -R $APP_USER:$APP_USER /home/$APP_USER && \
     delgroup ping && addgroup -g 998 ping && \
-    addgroup -g ${DOCKER_GID} docker && addgroup ${MYUSER} docker && \
-    mkdir -p /srv && chown -R $MYUSER:$MYUSER /srv && \
+    addgroup -g ${DOCKER_GID} docker && addgroup ${APP_USER} docker && \
+    mkdir -p /srv && chown -R $APP_USER:$APP_USER /srv && \
     cp /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && \
     echo "${TIME_ZONE}" > /etc/timezone && date && \
     ln -s /usr/bin/dumb-init /sbin/dinit && \

@@ -1,4 +1,5 @@
 FROM golang:1.12-alpine
+LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
     CGO_ENABLED=0 \
