@@ -30,6 +30,7 @@ It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpi
 * Optionally runs `/srv/init.sh` if provided by custom container
 * Packages `tzdata`, `curl`, `su-exec`, `ca-certificates` and `openssl` pre-installed
 * Adds the user `app` (uid=1001)
+* By default enforces non-root execution of the command. Optional "/init-root.sh" can be used to run as root.
 
 ### Run-time Customization
 

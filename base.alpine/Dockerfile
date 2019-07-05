@@ -1,17 +1,18 @@
-FROM alpine:3.9
+FROM alpine:3.10
 
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
     TERM=xterm-color           \
     TIME_ZONE=America/Chicago  \
-    APP_USER=app                 \
-    APP_UID=1001                 \
+    APP_USER=app               \
+    APP_UID=1001               \
     DOCKER_GID=999         
 
 COPY files/scripts/nop.sh /usr/bin/nop.sh
 COPY files/scripts/app.sh /usr/bin/app.sh
 COPY files/init.sh /init.sh
+COPY files/init-root.sh /init-root.sh
 
 RUN \
     chmod +x /usr/bin/nop.sh /usr/bin/app.sh /init.sh && \
