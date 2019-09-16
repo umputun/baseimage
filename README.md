@@ -1,4 +1,4 @@
-# baseimage [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/umputun/baseimage/) ![](https://github.com/umputun/baseimage/workflows/build/badge.svg)
+# baseimage [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/umputun/baseimage/) [![Actions](https://github.com/umputun/baseimage/workflows/build/badge.svg)](https://github.com/umputun/baseimage/actions)
 
 _minimalist docker base image to build and deploy my services and applications._
 
