@@ -1,7 +1,0 @@
-install:
-  - docker --version
-  - docker-compose --version
-
-script:
-  - docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
-  - docker build --rm -f base.alpine/Dockerfile -t base.app:latest base.alpine
