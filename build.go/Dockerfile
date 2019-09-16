@@ -1,4 +1,4 @@
-FROM golang:1.12-alpine
+FROM golang:1.13-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
@@ -7,7 +7,7 @@ ENV \
     GOARCH=amd64 \
     GOMETALINTER=2.0.12 \
     GOVERALLS=0.0.2 \
-    GOLANGCI=1.17.1 \
+    GOLANGCI=1.18.0 \
     STATIK=0.1.5
 
 RUN \
