@@ -8,13 +8,12 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build base.alpine --file Dockerfile
+      run:  docker build --rm -f base.alpine/Dockerfile -t base.app:latest base.alpine
       
   build_go_image:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build build.go --file Dockerfile
-          
-      
+      run:  docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
+ 
