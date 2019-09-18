@@ -63,7 +63,7 @@ COPY --from=build /build/app /srv/app
 EXPOSE 8080
 WORKDIR /srv
 
-CMD ["/srv/app", "param1", "param2]
+CMD ["/srv/app", "param1", "param2"]
 ```
 
 It will make a container running "/srv/app" (with passed params) under 'app' user.
