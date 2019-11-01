@@ -7,7 +7,7 @@ ENV \
     GOARCH=amd64 \
     GOMETALINTER=2.0.12 \
     GOVERALLS=0.0.2 \
-    GOLANGCI=1.18.0 \
+    GOLANGCI=1.21.0 \
     STATIK=0.1.5
 
 RUN \
