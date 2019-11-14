@@ -15,7 +15,7 @@ COPY files/init.sh /init.sh
 COPY files/init-root.sh /init-root.sh
 
 RUN \
-    chmod +x /usr/bin/nop.sh /usr/bin/app.sh /init.sh && \
+    chmod +x /usr/bin/nop.sh /usr/bin/app.sh /init.sh /init-root.sh && \
     apk add --no-cache --update su-exec tzdata curl ca-certificates dumb-init && \
     ln -s /sbin/su-exec /usr/local/bin/gosu && \
     mkdir -p /home/$APP_USER && \
