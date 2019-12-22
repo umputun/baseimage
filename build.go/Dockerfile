@@ -5,8 +5,7 @@ ENV \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
-    GOMETALINTER=2.0.12 \
-    GOVERALLS=0.0.2 \
+    GOVERALLS=0.0.4 \
     GOLANGCI=1.21.0 \
     STATIK=0.1.5
 
@@ -17,12 +16,6 @@ RUN \
 
 RUN \
     go version && \
-    go get -u -v github.com/alecthomas/gometalinter && \
-    cd /go/src/github.com/alecthomas/gometalinter && \
-    git checkout v${GOMETALINTER} && \
-    go install github.com/alecthomas/gometalinter && \
-    gometalinter --install && \
-    go get -u -v github.com/GoASTScanner/gas && \
     go get -u -v github.com/golang/dep/cmd/dep && \
     go get -u -v github.com/kardianos/govendor && \
     go get -u -v github.com/jteeuwen/go-bindata/... && \

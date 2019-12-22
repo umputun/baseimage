@@ -31,4 +31,4 @@ if [[ ${e:0:1} == "<" ]]; then
     ts=$(date -d "@${log_elems[5]}" +'%Y%m%dT%H:%M:%S')
 fi
 
-echo $head-$short_hash-$ts
+echo "$head"-"$short_hash"-"$ts"
