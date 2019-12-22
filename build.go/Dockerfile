@@ -7,7 +7,7 @@ ENV \
     GOARCH=amd64 \
     GOVERALLS=0.0.4 \
     GOLANGCI=1.21.0 \
-    STATIK=0.1.5
+    STATIK=0.1.6
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
