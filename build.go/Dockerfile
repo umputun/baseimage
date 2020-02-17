@@ -5,8 +5,8 @@ ENV \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
-    GOVERALLS=0.0.4 \
-    GOLANGCI=1.21.0 \
+    GOVERALLS=0.0.5 \
+    GOLANGCI=1.23.6 \
     STATIK=0.1.6
 
 RUN \
