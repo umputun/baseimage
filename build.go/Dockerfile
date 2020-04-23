@@ -23,7 +23,7 @@ RUN \
     go get -u -v github.com/vektra/mockery/.../
 
 RUN \
-    GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v{GOLANGCI} && \
+    GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI} && \
     golangci-lint --version
 
 RUN \
