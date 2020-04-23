@@ -23,11 +23,7 @@ RUN \
     go get -u -v github.com/vektra/mockery/.../
 
 RUN \
-    go get -u -v github.com/golangci/golangci-lint/cmd/golangci-lint && \
-    cd /go/src/github.com/golangci/golangci-lint && \
-    git checkout v${GOLANGCI} && \
-    cd /go/src/github.com/golangci/golangci-lint/cmd/golangci-lint && \
-    go install -ldflags "-X 'main.version=$(git describe --tags)' -X 'main.commit=$(git rev-parse --short HEAD)' -X 'main.date=$(date)'" && \
+    GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v{GOLANGCI}
     golangci-lint --version
 
 RUN \
