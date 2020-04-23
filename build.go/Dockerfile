@@ -6,7 +6,7 @@ ENV \
     GOOS=linux \
     GOARCH=amd64 \
     GOVERALLS=0.0.5 \
-    GOLANGCI=1.24.0 \
+    GOLANGCI=1.25.0 \
     STATIK=0.1.6
 
 RUN \
