@@ -14,6 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Build the Docker image
       run:  docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
- 
+
+  deply_image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploy images
+      env:
+        GITHUBPKG: ${{ secrets.GITHUBPKG }}
+      run: |
+        ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+        echo GITHUB_REF - $ref
+        docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
+        docker tag build.app:latest docker.pkg.github.com/umputun/baseimage/app:${ref}
+        docker tag build.go:latest docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
+        docker push docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
+        docker push docker.pkg.github.com/umputun/baseimage/app:${ref}
