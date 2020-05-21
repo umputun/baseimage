@@ -14,7 +14,7 @@ jobs:
         ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
         echo GITHUB_REF - $ref
         docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
-        docker tag build.app:latest docker.pkg.github.com/umputun/baseimage/app:${ref}
+        docker tag base.app:latest docker.pkg.github.com/umputun/baseimage/app:${ref}
         docker push docker.pkg.github.com/umputun/baseimage/app:${ref}
       env:
         GITHUBPKG: ${{ secrets.GITHUBPKG }}
@@ -30,7 +30,7 @@ jobs:
         ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
         echo GITHUB_REF - $ref
         docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
-        docker tag build.app:latest docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
+        docker tag build.go:latest docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
         docker push docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
       env:
         GITHUBPKG: ${{ secrets.GITHUBPKG }}
