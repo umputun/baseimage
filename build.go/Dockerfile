@@ -6,7 +6,7 @@ ENV \
     GOOS=linux \
     GOARCH=amd64 \
     GOVERALLS=0.0.5 \
-    GOLANGCI=1.25.0 \
+    GOLANGCI=1.27.0 \
     STATIK=0.1.7
 
 RUN \
@@ -18,7 +18,7 @@ RUN \
     go version && \
     go get -u -v github.com/golang/dep/cmd/dep && \
     go get -u -v github.com/kardianos/govendor && \
-    go get -u -v github.com/jteeuwen/go-bindata/... && \
+    go get -u -v github.com/go-bindata/go-bindata/... && \
     go get -u -v github.com/stretchr/testify && \
     go get -u -v github.com/vektra/mockery/.../
 
