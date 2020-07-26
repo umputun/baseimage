@@ -5,9 +5,10 @@ ENV \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
-    GOVERALLS=0.0.5 \
-    GOLANGCI=1.27.0 \
-    STATIK=0.1.7
+    GOVERALLS=0.0.6 \
+    GOLANGCI=1.29.0 \
+    STATIK=0.1.7 \ 
+    GORELEASER=0.140.1
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
@@ -37,6 +38,12 @@ RUN \
     cd /go/src/github.com/rakyll/statik && \
     git checkout v${STATIK} && \
     go install github.com/rakyll/statik
+
+RUN \
+    wget https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER}/goreleaser_Linux_x86_64.tar.gz -O /tmp/goreleaser_Linux_x86_64.tar.gz && \
+    cd /tmp && tar -zxf /tmp/goreleaser_Linux_x86_64.tar.gz && \
+    mv /tmp/goreleaser /usr/bin/goreleaser && \
+    goreleaser -v
 
 ADD coverage.sh /script/coverage.sh
 ADD checkvendor.sh /script/checkvendor.sh
