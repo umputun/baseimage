@@ -33,7 +33,7 @@ fi
 
 echo "execute \"$@\""
 if [[ ${uid} -eq 0 ]]; then
-   su-exec app $@
+   exec su-exec app $@
 else
    exec $@
 fi
