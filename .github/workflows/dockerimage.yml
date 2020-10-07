@@ -8,27 +8,32 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: build and deploy base.app image
+    - name: build base.app image
       run: |
         docker build --rm -f base.alpine/Dockerfile -t base.app:latest base.alpine
+
+    - name: deploy base.app image
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      run: |
         ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
         echo GITHUB_REF - $ref
         docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
         docker tag base.app:latest docker.pkg.github.com/umputun/baseimage/app:${ref}
         docker push docker.pkg.github.com/umputun/baseimage/app:${ref}
-      env:
-        GITHUBPKG: ${{ secrets.GITHUBPKG }}
 
   build_go_image:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
-    - name: build and deploy build.go image
+    - name: build build.go image
       run: |
         docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
-        ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
-        echo GITHUB_REF - $ref
+
+    - name: deploy build.go image
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      run: |
+        docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
         docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
         docker tag build.go:latest docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
         docker push docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
