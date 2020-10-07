@@ -20,6 +20,8 @@ jobs:
         docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
         docker tag base.app:latest docker.pkg.github.com/umputun/baseimage/app:${ref}
         docker push docker.pkg.github.com/umputun/baseimage/app:${ref}
+      env:
+        GITHUBPKG: ${{ secrets.GITHUBPKG }}
 
   build_go_image:
     runs-on: ubuntu-latest
@@ -33,6 +35,8 @@ jobs:
     - name: deploy build.go image
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
       run: |
+        ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+        echo GITHUB_REF - $ref
         docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
         docker login docker.pkg.github.com -u umputun -p ${GITHUBPKG}
         docker tag build.go:latest docker.pkg.github.com/umputun/baseimage/buildgo:${ref}
