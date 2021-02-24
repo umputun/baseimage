@@ -22,7 +22,7 @@ RUN \
     go get -u -v github.com/kardianos/govendor && \
     go get -u -v github.com/go-bindata/go-bindata/... && \
     go get -u -v github.com/stretchr/testify && \
-    go get -u -v github.com/vektra/mockery/.../
+    GO111MODULE=on go get -u -v github.com/vektra/mockery/.../
 
 RUN \
     GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI} && \
