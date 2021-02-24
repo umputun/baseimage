@@ -1,7 +1,8 @@
-FROM golang:1.14-alpine
+FROM golang:1.15-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
+    TIME_ZONE=America/Chicago \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
@@ -12,7 +13,7 @@ ENV \
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
-    cp /usr/share/zoneinfo/America/Chicago /etc/localtime && \
+    echo "${TIME_ZONE}" > /etc/timezone && date && \
     rm -rf /var/cache/apk/*
 
 RUN \
