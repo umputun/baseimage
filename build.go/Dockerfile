@@ -13,7 +13,9 @@ ENV \
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
-    echo "${TIME_ZONE}" > /etc/timezone && date && \
+    echo "${TIME_ZONE}" > /etc/timezone && \
+    cp /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && \
+    date && \
     rm -rf /var/cache/apk/*
 
 RUN \
