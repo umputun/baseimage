@@ -7,6 +7,12 @@ Two images included:
 1. go build image - `umputun/baseimage:buildgo-latest`. For build stage, includes go compiler and linters. Alpine based.
 2. base application image `umputun/baseimage:app-latest`
 
+Images TZ can be customized in Makefile.
+
+```Makefile
+export TIME_ZONE := America/Chicago
+```
+
 ## Go Build Image
 
 Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dockefile` to build go applications and services.
@@ -18,7 +24,6 @@ Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dock
 * Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [go-bindata](https://github.com/jteeuwen/go-bindata)
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
 * `git-rev.sh` script to make git-based version without full `.git` copied (works without `.git/objects`)
-
 
 ## Base Application Image
 
@@ -36,8 +41,8 @@ It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpi
 
 The container can be customized in runtime by setting environment from docker's command line or as a part of `docker-compose.yml`
 
-- `TIME_ZONE` - set container's TZ, default "America/Chicago"
-- `APP_UID` - UID of internal `app` user, default 1001
+* `TIME_ZONE` - set container's TZ, default "America/Chicago"
+* `APP_UID` - UID of internal `app` user, default 1001
 
 ## Example of multi-stage Dockerfile with baseimage:buildgo and baseimage:app
 
@@ -69,4 +74,3 @@ CMD ["/srv/app", "param1", "param2"]
 It will make a container running "/srv/app" (with passed params) under 'app' user.
 
 To customize both TIME_ZONE and UID - `docker run -e TIME_ZONE=America/New_York -e APP_UID=2000 <image>`
- 
