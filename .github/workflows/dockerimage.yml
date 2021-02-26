@@ -10,7 +10,7 @@ jobs:
 
     - name: build base.app image
       run: |
-        docker build --rm -f base.alpine/Dockerfile -t base.app:latest base.alpine
+        docker build --rm --build-arg TIME_ZONE=America/Chicago -f base.alpine/Dockerfile -t base.app:latest base.alpine
 
     - name: deploy base.app image
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -30,7 +30,7 @@ jobs:
 
     - name: build build.go image
       run: |
-        docker build --rm -f build.go/Dockerfile -t build.go:latest build.go
+        docker build --rm --build-arg TIME_ZONE=America/Chicago -f build.go/Dockerfile -t build.go:latest build.go
 
     - name: deploy build.go image
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
