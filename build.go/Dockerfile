@@ -1,8 +1,10 @@
 FROM golang:1.15-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
+ARG TIME_ZONE
+
 ENV \
-    TIME_ZONE=America/Chicago \
+    TIME_ZONE=${TIME_ZONE} \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \

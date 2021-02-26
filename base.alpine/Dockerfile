@@ -2,9 +2,11 @@ FROM alpine:3.13
 
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
+ARG TIME_ZONE
+
 ENV \
     TERM=xterm-color           \
-    TIME_ZONE=America/Chicago  \
+    TIME_ZONE=${TIME_ZONE}     \
     APP_USER=app               \
     APP_UID=1001               \
     DOCKER_GID=999         
