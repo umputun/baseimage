@@ -70,3 +70,15 @@ It will make a container running "/srv/app" (with passed params) under 'app' use
 
 To customize both TIME_ZONE and UID - `docker run -e TIME_ZONE=America/New_York -e APP_UID=2000 <image>`
  
+## Base Scratch Image
+
+Image `umputun/baseimage:scratch-latest` (or `ghcr.io/umputun/baseimage/scratch`) adds a few extras to the `scratch` (empty) image: 
+
+- zoneinfo to allow change the timezone of the running application
+- SSL certificates (ca-certificates)
+- `/etc/passwd` and `/etc/passwd` with `app` user and group added (UID:1001, GID:1001)
+- `/nop` program to wait forever and do nothing
+
+Container sets user to `app` and working directory to `/srv`, no entrypoint set. In order to change time zone `TZ` env can be used. 
+
+The overall size of this image is about 1M only.

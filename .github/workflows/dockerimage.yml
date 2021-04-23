@@ -55,7 +55,7 @@ jobs:
         echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
         docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
           -t ghcr.io/${USERNAME}/baseimage/app:${ref} -t ${USERNAME}/baseimage:app-${ref} \
-          -t ghcr.io/${USERNAME}/baseimage/app:lastes -t ${USERNAME}/baseimage:app-latest \
+          -t ghcr.io/${USERNAME}/baseimage/app:lastest -t ${USERNAME}/baseimage:app-latest \
           base.alpine -f base.alpine/Dockerfile
 
 
@@ -89,7 +89,7 @@ jobs:
         echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
         echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
         docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
-          -t ghcr.io/${USERNAME}/baseimage/buildgo:${ref} -t ${USERNAME}/baseimage:app-${ref} \
+          -t ghcr.io/${USERNAME}/baseimage/buildgo:${ref} -t ${USERNAME}/baseimage:buildgo-${ref} \
           build.go -f build.go/Dockerfile
 
     - name: build build.go latest image
@@ -106,6 +106,57 @@ jobs:
         echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
         echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
         docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
-          -t ghcr.io/${USERNAME}/baseimage/buildgo:${ref} -t ${USERNAME}/baseimage:app-${ref} \
-          -t ghcr.io/${USERNAME}/baseimage/buildgo:latest -t ${USERNAME}/baseimage:app-latest \
+          -t ghcr.io/${USERNAME}/baseimage/buildgo:${ref} -t ${USERNAME}/baseimage:buildgo-${ref} \
+          -t ghcr.io/${USERNAME}/baseimage/buildgo:latest -t ${USERNAME}/baseimage:buildgo-latest \
           build.go -f build.go/Dockerfile
+
+  build_scratch_image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: available platforms
+      run: echo ${{ steps.buildx.outputs.platforms }}
+
+    - name: build base.scratch image
+      if: ${{ github.ref == 'refs/heads/master' }}
+      env:
+        GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
+        DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        USERNAME: ${{ github.actor }}
+        GITHUB_SHA: ${{ github.sha}}
+        GITHUB_REF: ${{ github.ref}}
+      run: |
+        ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+        echo GITHUB_REF - $ref
+        echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
+        echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
+        docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
+          -t ghcr.io/${USERNAME}/baseimage/scratch:${ref} -t ${USERNAME}/baseimage:scratch-${ref} \
+          base.scratch -f base.scratch/Dockerfile
+
+    - name: build base.scratch latest image
+      if: ${{ startsWith(github.ref, 'refs/tags/') }}
+      env:
+        GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
+        DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        USERNAME: ${{ github.actor }}
+        GITHUB_SHA: ${{ github.sha}}
+        GITHUB_REF: ${{ github.ref}}
+      run: |
+        ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+        echo GITHUB_REF - $ref
+        echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
+        echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
+        docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
+          -t ghcr.io/${USERNAME}/baseimage/scratch:${ref} -t ${USERNAME}/baseimage:scratch-${ref} \
+          -t ghcr.io/${USERNAME}/baseimage/scratch:lastest -t ${USERNAME}/baseimage:scratch-latest \
+          base.scratch -f base.scratch/Dockerfile
