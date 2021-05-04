@@ -1,29 +1,30 @@
 # baseimage [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/umputun/baseimage/) [![Actions](https://github.com/umputun/baseimage/workflows/build/badge.svg)](https://github.com/umputun/baseimage/actions)
 
-_minimalist docker base image to build and deploy my services and applications._
+_minimal docker base image to build and deploy services and applications._
 
-Two images included:
+Three images provided:
 
 1. go build image - `umputun/baseimage:buildgo-latest`. For build stage, includes go compiler and linters. Alpine based.
 2. base application image `umputun/baseimage:app-latest`
+3. scratch-based application image `umputun/baseimage:scratch-latest`
+
 
 ## Go Build Image
 
-Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dockefile` to build go applications and services.
+Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:latest` intends to be used in multi-stage `Dockefile` to build go applications and services.
 
 * Relatively small, based on the official [golang:alpine](https://hub.docker.com/_/golang/) image
-* Enforces `CGO_ENABLED=0` and `GOARCH=amd64`
-* Adds vendor tool [dep](https://github.com/golang/dep) and [govendor](https://github.com/kardianos/govendor)
-* With fully installed and ready to use linters [gometalinter](https://github.com/alecthomas/gometalinter) and [golangci-lint](https://github.com/golangci/golangci-lint)
-* Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [go-bindata](https://github.com/jteeuwen/go-bindata)
+* Enforces `CGO_ENABLED=0`
+* With fully installed and ready to use [golangci-lint](https://github.com/golangci/golangci-lint)
+* Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [moq](https://github.com/matryer/moq)
+* Includes [gorleaser](https://github.com/goreleaser/) and [statik](https://github.com/rakyll/statik)
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
-* `git-rev.sh` script to make git-based version without full `.git` copied (works without `.git/objects`)
+* `/script/version.sh` script to make git-based version
 
 
 ## Base Application Image
 
-Image `umputun/baseimage:app-latest` designed as a lightweight, ready-to-use base for various services.
-It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
+Image `umputun/baseimage:app-latest` and `ghcr.io/umputun/baseimage/app:lastest` designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
 
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
 * Container command runs under `app` user with uid `$APP_UID` (default 1001) 
@@ -32,11 +33,12 @@ It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpi
 * Adds the user `app` (uid=1001)
 * By default enforces non-root execution of the command. Optional "/init-root.sh" can be used to run as root.
 
+
 ### Run-time Customization
 
 The container can be customized in runtime by setting environment from docker's command line or as a part of `docker-compose.yml`
 
-- `TIME_ZONE` - set container's TZ, default "America/Chicago"
+- `TIME_ZONE` - set container's TZ, default "America/Chicago". For scratch-based `TZ` should be used instead
 - `APP_UID` - UID of internal `app` user, default 1001
 
 ## Example of multi-stage Dockerfile with baseimage:buildgo and baseimage:app
