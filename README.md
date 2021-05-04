@@ -12,7 +12,7 @@ Two images included:
 Image `umputun/baseimage:buildgo-latest` intends to be used in multi-stage `Dockefile` to build go applications and services.
 
 * Relatively small, based on the official [golang:alpine](https://hub.docker.com/_/golang/) image
-* Enforces `CGO_ENABLED=0` and `GOARCH=amd64`
+* Enforces `CGO_ENABLED=0`
 * Adds vendor tool [dep](https://github.com/golang/dep) and [govendor](https://github.com/kardianos/govendor)
 * With fully installed and ready to use linters [gometalinter](https://github.com/alecthomas/gometalinter) and [golangci-lint](https://github.com/golangci/golangci-lint)
 * Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [go-bindata](https://github.com/jteeuwen/go-bindata)
