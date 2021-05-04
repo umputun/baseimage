@@ -5,7 +5,7 @@ if [ -z "$CI" ] ; then
   ref=$(git describe --tags --exact-match 2> /dev/null || git symbolic-ref -q --short HEAD)
   version="${ref}"-$(git log -1 --format=%h)-$(date +%Y%m%dT%H:%M:%S)
 else
-  # outside of CI (gh actions)
+  # inside CI (gh actions)
   ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
   version=${ref}-${GITHUB_SHA:0:7}-$(date +%Y%m%dT%H:%M:%S)
 fi
