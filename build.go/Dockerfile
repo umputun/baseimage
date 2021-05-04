@@ -32,5 +32,6 @@ RUN go get github.com/goreleaser/goreleaser@v${GORELEASER} &&  goreleaser -v
 
 ADD coverage.sh /script/coverage.sh
 ADD git-rev.sh /script/git-rev.sh
+ADD version.sh /script/version.sh
 
-RUN chmod +x /script/coverage.sh /script/git-rev.sh
+RUN chmod +x /script/coverage.sh /script/git-rev.sh /script/version.sh
