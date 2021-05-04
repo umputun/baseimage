@@ -1,4 +1,4 @@
-FROM ghcr.io/umputun/baseimage/app:v1.6.1 as prep
+FROM ghcr.io/umputun/baseimage/app:lastest as prep
 
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
