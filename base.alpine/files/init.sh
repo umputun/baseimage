@@ -23,7 +23,7 @@ fi
 
 if [[ -f "/srv/init.sh" ]]; then
     echo "execute /srv/init.sh"
-    chmod +x /srv/init.sh
+    chmod +x /srv/init.sh || true
     /srv/init.sh
     if [[ "$?" -ne "0" ]]; then
       echo "/srv/init.sh failed"
