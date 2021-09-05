@@ -1,10 +1,11 @@
-FROM --platform=$BUILDPLATFORM golang:1.16-alpine
+FROM golang:1.16-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
+
 ARG TARGETARCH
-ENV GOARCH=$TARGETARCH
 ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
+    GOARCH=$TARGETARCH          \
     GOVERALLS=0.0.8             \
     GOLANGCI=1.39.0             \
     STATIK=0.1.7                \
