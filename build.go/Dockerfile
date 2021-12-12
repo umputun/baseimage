@@ -4,10 +4,10 @@ LABEL maintainer="Umputun <umputun@gmail.com>"
 ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
-    GOVERALLS=0.0.9             \
-    GOLANGCI=1.42.1             \
+    GOVERALLS=0.0.11            \
+    GOLANGCI=1.43.0             \
     STATIK=0.1.7                \
-    GORELEASER=0.178.0
+    GORELEASER=1.1.0
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
