@@ -1,13 +1,13 @@
-FROM golang:1.17-alpine
+FROM golang:1.18-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
     GOVERALLS=0.0.11            \
-    GOLANGCI=1.43.0             \
+    GOLANGCI=1.45.2             \
     STATIK=0.1.7                \
-    GORELEASER=1.1.0
+    GORELEASER=1.8.3
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
@@ -18,17 +18,15 @@ RUN \
 
 RUN \
     go version && \
-    go get -u github.com/stretchr/testify && \
-    go get -u github.com/vektra/mockery/.../ && mockery -version && \
-    go get github.com/matryer/moq && moq -version
+    go install github.com/matryer/moq@latest && moq -version
 
 RUN \
-    go get github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI} && \
+    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI} && \
     golangci-lint --version
 
-RUN go get github.com/mattn/goveralls@v${GOVERALLS} && which goveralls
-RUN go get github.com/rakyll/statik@v${STATIK} && which statik
-RUN go get github.com/goreleaser/goreleaser@v${GORELEASER} &&  goreleaser -v
+RUN go install github.com/mattn/goveralls@v${GOVERALLS} && which goveralls
+RUN go install github.com/rakyll/statik@v${STATIK} && which statik
+RUN go install github.com/goreleaser/goreleaser@v${GORELEASER} &&  goreleaser -v
 
 ADD coverage.sh /script/coverage.sh
 ADD git-rev.sh /script/git-rev.sh
