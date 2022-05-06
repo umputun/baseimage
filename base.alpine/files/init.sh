@@ -31,9 +31,9 @@ if [[ -f "/srv/init.sh" ]]; then
     fi
 fi
 
-echo "execute \"$@\""
+echo execute "$@"
 if [[ ${uid} -eq 0 ]]; then
-   exec su-exec app $@
+   exec su-exec app "$@"
 else
-   exec $@
+   exec "$@"
 fi
