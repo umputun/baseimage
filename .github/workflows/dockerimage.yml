@@ -55,7 +55,7 @@ jobs:
         echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
         docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
           -t ghcr.io/${USERNAME}/baseimage/app:${ref} -t ${USERNAME}/baseimage:app-${ref} \
-          -t ghcr.io/${USERNAME}/baseimage/app:lastest -t ${USERNAME}/baseimage:app-latest \
+          -t ghcr.io/${USERNAME}/baseimage/app:latest -t ${USERNAME}/baseimage:app-latest \
           base.alpine -f base.alpine/Dockerfile
 
 
@@ -158,5 +158,5 @@ jobs:
         echo ${DOCKER_HUB_TOKEN} | docker login -u ${USERNAME} --password-stdin
         docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64 \
           -t ghcr.io/${USERNAME}/baseimage/scratch:${ref} -t ${USERNAME}/baseimage:scratch-${ref} \
-          -t ghcr.io/${USERNAME}/baseimage/scratch:lastest -t ${USERNAME}/baseimage:scratch-latest \
+          -t ghcr.io/${USERNAME}/baseimage/scratch:latest -t ${USERNAME}/baseimage:scratch-latest \
           base.scratch -f base.scratch/Dockerfile
