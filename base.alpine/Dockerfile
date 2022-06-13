@@ -11,6 +11,7 @@ ENV \
 
 COPY files/scripts/nop.sh /usr/bin/nop.sh
 COPY files/scripts/app.sh /usr/bin/app.sh
+COPY files/scripts/pong.sh /usr/bin/pong.sh
 COPY files/init.sh /init.sh
 COPY files/init-root.sh /init-root.sh
 
