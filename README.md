@@ -17,7 +17,7 @@ Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:
 * Enforces `CGO_ENABLED=0`
 * With fully installed and ready to use [golangci-lint](https://github.com/golangci/golangci-lint)
 * Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [moq](https://github.com/matryer/moq)
-* Includes [gorleaser](https://github.com/goreleaser/) and [statik](https://github.com/rakyll/statik)
+* Includes [goreleaser](https://github.com/goreleaser/) and [statik](https://github.com/rakyll/statik)
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
 * `/script/version.sh` script to make git-based version
 
