@@ -1,13 +1,13 @@
-FROM golang:1.18-alpine
+FROM golang:1.19-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
     GOVERALLS=0.0.11            \
-    GOLANGCI=1.45.2             \
+    GOLANGCI=1.48.0             \
     STATIK=0.1.7                \
-    GORELEASER=1.8.3
+    GORELEASER=1.10.3
 
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
