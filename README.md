@@ -43,7 +43,7 @@ The container can be customized in runtime by setting environment from docker's 
 
 ## Example of multi-stage Dockerfile with baseimage:buildgo and baseimage:app
 
-```docker
+```dockerfile
 FROM umputun/baseimage:buildgo as build
 
 WORKDIR /build
