@@ -3,7 +3,7 @@
 # this script provides access to scratch-based containers by temporary copy busybox in.
 # removes all of this on exit
 
-id="$$" # randomize file names to prevent collisions if run mutiple times
+id="$$" # randomize file names to prevent collisions if run multiple times
 
 # copy busybox into running container as /busybox.<random>
 docker run -d --rm --name=bbox busybox:latest sleep 10 1>/dev/null 2>/dev/null
