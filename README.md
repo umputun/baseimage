@@ -24,7 +24,7 @@ Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:
 
 ## Base Application Image
 
-Image `umputun/baseimage:app-latest` and `ghcr.io/umputun/baseimage/app:lastest` designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
+Image `umputun/baseimage:app-latest` and `ghcr.io/umputun/baseimage/app:latest` designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
 
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
 * Container command runs under `app` user with uid `$APP_UID` (default 1001) 
