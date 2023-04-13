@@ -28,8 +28,8 @@ RUN go install github.com/mattn/goveralls@v${GOVERALLS} && which goveralls
 RUN go install github.com/rakyll/statik@v${STATIK} && which statik
 RUN go install github.com/goreleaser/goreleaser@v${GORELEASER} &&  goreleaser -v
 
-ADD coverage.sh /script/coverage.sh
-ADD git-rev.sh /script/git-rev.sh
-ADD version.sh /script/version.sh
+COPY coverage.sh /script/coverage.sh
+COPY git-rev.sh /script/git-rev.sh
+COPY version.sh /script/version.sh
 
 RUN chmod +x /script/coverage.sh /script/git-rev.sh /script/version.sh
