@@ -1,18 +1,34 @@
 #!/bin/sh
 
-# this script provides access to scratch-based containers ot any other container without shell
-# by temporary copy busybox in. removes all of this on the exit
+# this script provides access to scratch-based containers or any other container without a shell
+# by temporarily copying busybox in and removing all of this on the exit
 
-# check if sh is already available
-if docker exec -it "$1" sh -c ls 1>/dev/null 2>/dev/null; then
-    # check for available shells
-    for shell in bash zsh ash sh; do
-        if docker exec -it "$1" $shell -c ls 1>/dev/null 2>/dev/null; then
-            docker exec -it "$1" $shell
-            exit 0
-        fi
-    done
-    exit 1
+FORCE=false
+
+while getopts ":f" opt; do
+  case $opt in
+    f)
+      FORCE=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
+if [ "$FORCE" = false ]; then
+    # check if sh is already available
+    if docker exec -it "$1" sh -c ls 1>/dev/null 2>/dev/null; then
+        # check for available shells
+        for shell in bash zsh ash sh; do
+            if docker exec -it "$1" $shell -c ls 1>/dev/null 2>/dev/null; then
+                docker exec -it "$1" $shell
+                exit 0
+            fi
+        done
+        exit 1
+    fi
 fi
 
 id="$$" # randomize file names to prevent collisions if run multiple times
