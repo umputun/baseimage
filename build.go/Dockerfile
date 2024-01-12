@@ -9,6 +9,9 @@ ENV \
     STATIK=0.1.7                \
     GORELEASER=1.20.0
 
+# install gcc in order to be able to go test package with -race
+RUN apk --no-cache add gcc libc-dev
+
 RUN \
     apk add --no-cache --update tzdata git bash curl && \
     echo "${TIME_ZONE}" > /etc/timezone && \
