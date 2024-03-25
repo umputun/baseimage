@@ -1,13 +1,13 @@
-FROM golang:1.21-alpine
+FROM golang:1.22-alpine
 LABEL maintainer="Umputun <umputun@gmail.com>"
 
 ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
     GOVERALLS=0.0.11            \
-    GOLANGCI=1.54.1             \
+    GOLANGCI=1.57.1             \
     STATIK=0.1.7                \
-    GORELEASER=1.20.0
+    GORELEASER=1.24.0
 
 # install gcc in order to be able to go test package with -race
 RUN apk --no-cache add gcc libc-dev
