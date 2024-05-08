@@ -1,7 +1,7 @@
 FROM alpine:3.19
 
 LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
-# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#docker
+# enables automatic changelog generation by tools like Dependabot
 LABEL org.opencontainers.image.source="https://github.com/umputun/baseimage"
 
 ENV \

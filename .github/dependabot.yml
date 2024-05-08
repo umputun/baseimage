@@ -9,12 +9,12 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      "GitHub Actions updates":
+        patterns:
+          - "*"
   - package-ecosystem: "docker"
     directory: "/base.alpine"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "docker"
-    directory: "/base.scratch"
     schedule:
       interval: "monthly"
   - package-ecosystem: "docker"
