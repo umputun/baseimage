@@ -8,7 +8,6 @@ Three images provided:
 2. base application image `umputun/baseimage:app-latest`
 3. scratch-based application image `umputun/baseimage:scratch-latest`
 
-
 ## Go Build Image
 
 Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:latest` intends to be used in multi-stage `Dockefile` to build go applications and services.
@@ -21,18 +20,16 @@ Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
 * `/script/version.sh` script to make git-based version
 
-
 ## Base Application Image
 
 Image `umputun/baseimage:app-latest` and `ghcr.io/umputun/baseimage/app:latest` designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
 
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
-* Container command runs under `app` user with uid `$APP_UID` (default 1001) 
+* Container command runs under `app` user with uid `$APP_UID` (default 1001)
 * Optionally runs `/srv/init.sh` if provided by custom container
 * Packages `tzdata`, `curl`, `su-exec`, `ca-certificates` and `openssl` pre-installed
 * Adds the user `app` (uid=1001)
-* By default enforces non-root execution of the command. Optional "/init-root.sh" can be used to run as root.
-
+* By default, enforces non-root execution of the command. Optional "/init-root.sh" can be used to run as root.
 
 ### Run-time Customization
 
@@ -49,13 +46,13 @@ FROM umputun/baseimage:buildgo as build
 WORKDIR /build
 ADD . /build
 
-RUN go test -mod=vendor ./...
+RUN go test ./...
 RUN golangci-lint run --out-format=tab --tests=false ./...
 
 RUN \
-    revison=$(/script/git-rev.sh) && \
-    echo "revision=${revison}" && \
-    go build -mod=vendor -o app -ldflags "-X main.revision=$revison -s -w" .
+    revision=$(/script/git-rev.sh) && \
+    echo "revision=${revision}" && \
+    go build -o app -ldflags "-X main.revision=$revision -s -w" .
 
 
 FROM umputun/baseimage:app
@@ -71,16 +68,41 @@ CMD ["/srv/app", "param1", "param2"]
 It will make a container running "/srv/app" (with passed params) under 'app' user.
 
 To customize both TIME_ZONE and UID - `docker run -e TIME_ZONE=America/New_York -e APP_UID=2000 <image>`
- 
+
 ## Base Scratch Image
 
-Image `umputun/baseimage:scratch-latest` (or `ghcr.io/umputun/baseimage/scratch`) adds a few extras to the `scratch` (empty) image: 
+Image `umputun/baseimage:scratch-latest` (or `ghcr.io/umputun/baseimage/scratch`) adds a few extras to the `scratch` (empty) image:
 
-- zoneinfo to allow change the timezone of the running application
+- zoneinfo to allow change the timezone of the running application using the `TZ` environment variable
 - SSL certificates (ca-certificates)
 - `/etc/passwd` and `/etc/groups` with `app` user and group added (UID:1001, GID:1001)
 - `/nop` program to wait forever and do nothing
 
-Container sets user to `app` and working directory to `/srv`, no entrypoint set. In order to change time zone `TZ` env can be used. 
+Container sets user to `app` and working directory to `/srv`, no entrypoint set. In order to change time zone `TZ` env can be used.
 
-The overall size of this image is about 1M only.
+The overall size of this image is about 512KB only, with 4MB download size due to parent layers.
+
+### Multi-stage Dockerfile Example with baseimage:scratch
+
+```dockerfile
+# Build Stage
+FROM umputun/baseimage:buildgo as build
+
+WORKDIR /build
+ADD . /build
+
+RUN go test ./...
+RUN golangci-lint run --out-format=tab --tests=false ./...
+
+RUN \
+    revision=$(/script/git-rev.sh) && \
+    echo "revision=${revision}" && \
+    go build -mod=vendor -o app -ldflags "-X main.revision=$revision -s -w" .
+
+
+# Scratch-based Application Image
+FROM umputun/baseimage:scratch-latest
+
+COPY --from=build /build/app /srv/app
+
+CMD ["/srv/app", "param1", "param2"]
