@@ -1,7 +1,5 @@
 FROM ghcr.io/umputun/baseimage/app:latest as prep
 
-LABEL maintainer="Umputun <umputun@gmail.com>"
-
 RUN apk add -u tzdata ca-certificates build-base gcc
 
 RUN \
@@ -12,6 +10,11 @@ RUN \
     ls -la /tmp/nop
 
 FROM scratch
+
+LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#docker
+LABEL org.opencontainers.image.source="https://github.com/umputun/baseimage"
+
 ENV TZ=America/Chicago
 COPY --from=prep /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=prep /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
