@@ -1,6 +1,8 @@
 FROM alpine:3.19
 
-LABEL maintainer="Umputun <umputun@gmail.com>"
+LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#docker
+LABEL org.opencontainers.image.source="https://github.com/umputun/baseimage"
 
 ENV \
     TERM=xterm-color           \
