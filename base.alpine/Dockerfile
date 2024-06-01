@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.20
 
 LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
 # enables automatic changelog generation by tools like Dependabot
