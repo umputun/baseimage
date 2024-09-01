@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine
+FROM golang:1.23-alpine
 
 LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
 # enables automatic changelog generation by tools like Dependabot
