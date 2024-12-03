@@ -14,6 +14,7 @@ if [[ ${uid} -eq 0 ]]; then
     if [[ "${APP_UID}" -ne "1001" ]]; then
         echo "set custom APP_UID=${APP_UID}"
         sed -i "s/:1001:1001:/:${APP_UID}:${APP_UID}:/g" /etc/passwd
+        sed -i "s/:1001:/:${APP_UID}:/g" /etc/group
     else
         echo "custom APP_UID not defined, using default uid=1001"
     fi
