@@ -40,9 +40,9 @@ The container can be customized in runtime by setting environment from docker's 
 
 ### Working with Docker from inside container
 
-The `app` user is a member of the `docker` group. That allows it to interact with the Docker socket (`/var/run/docker.sock`) when it is explicitly mounted into the container. This is particularly useful for advanced use cases that require such functionality, such as monitoring other containers or accessing Docker APIs.
+The `app` user is a member of the `docker` group. That allows it to interact with the Docker socket (`/var/run/docker.sock`) when it is explicitly mounted into the container. This is particularly useful for advanced use cases that require such functionality, such as monitoring other containers or accessing Docker APIs.
 
-Under standard usage, the Docker socket is not mounted into the container. In such cases, the docker group membership does not grant the app user any elevated privileges. The container remains secure and operates with an unprivileged user.
+Under standard usage, the Docker socket is not mounted into the container. In such cases, the docker group membership does not grant the app user any elevated privileges. The container remains secure and operates with an unprivileged user.
 
 #### Security Implications
 
@@ -120,9 +120,9 @@ COPY --from=build /build/app /srv/app
 CMD ["/srv/app", "param1", "param2"]
 ```
 
-## `dk.sh` Script
+## `dk.sh`
 
-The `dk.sh` script is a simple script to get a shell inside containers that don't have one (like scratch-based containers). It works by temporarily copying BusyBox into the container and cleaning it up after you're done.
+The `dk.sh` is a simple script to get a shell inside containers that don't have one (like scratch-based containers). It works by temporarily copying BusyBox into the container and cleaning it up after you're done.
 
 ```
 ./dk.sh <container_name>
