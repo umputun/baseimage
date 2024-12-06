@@ -4,6 +4,21 @@ on:
   push:
     branches:
     tags:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'dk.sh'
+      - 'Makefile'
+      - '.github/dependabot.yml'
+      - '.github/FUNDING.yml'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'dk.sh'
+      - 'Makefile'
+      - '.github/dependabot.yml'
+      - '.github/FUNDING.yml'
 
 jobs:
   build_app_image:
@@ -13,23 +28,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up QEMU
+        if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/setup-qemu-action@v3
 
       - name: set up Docker Buildx
+        if: ${{ github.ref == 'refs/heads/master' }}
         id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: available platforms
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: build base.app image
+      - name: build base.app image (no push)
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          docker build base.alpine -f base.alpine/Dockerfile
+
+      - name: build and push master base.app image
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
@@ -39,14 +62,14 @@ jobs:
             -t ghcr.io/${USERNAME}/baseimage/app:${ref} -t ${USERNAME}/baseimage:app-${ref} \
             base.alpine -f base.alpine/Dockerfile
 
-      - name: build base.app latest image
+      - name: build and push tagged base.app latest image
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         env:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
@@ -64,23 +87,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up QEMU
+        if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/setup-qemu-action@v3
 
       - name: set up Docker Buildx
+        if: ${{ github.ref == 'refs/heads/master' }}
         id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: available platforms
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: build build.go image
+      - name: build build.go image (no push)
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          docker build build.go -f build.go/Dockerfile
+
+      - name: build and push master build.go image
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
@@ -96,8 +127,8 @@ jobs:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
@@ -115,23 +146,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up QEMU
+        if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/setup-qemu-action@v3
 
       - name: set up Docker Buildx
+        if: ${{ github.ref == 'refs/heads/master' }}
         id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: available platforms
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: build base.scratch image
+      - name: build base.scratch image (no push)
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          docker build base.scratch -f base.scratch/Dockerfile
+
+      - name: build and push master base.scratch image
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
@@ -147,8 +186,8 @@ jobs:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUBPKG }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
