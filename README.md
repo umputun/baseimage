@@ -119,3 +119,13 @@ COPY --from=build /build/app /srv/app
 
 CMD ["/srv/app", "param1", "param2"]
 ```
+
+## `dk.sh` Script
+
+The `dk.sh` script is a simple script to get a shell inside containers that don't have one (like scratch-based containers). It works by temporarily copying BusyBox into the container and cleaning it up after you're done.
+
+```
+./dk.sh <container_name>
+```
+
+This lets you inspect and debug the container's environment easily, without leaving any leftovers.
