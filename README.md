@@ -38,6 +38,18 @@ The container can be customized in runtime by setting environment from docker's 
 - `TIME_ZONE` - set container's TZ, default "America/Chicago". For scratch-based `TZ` should be used instead
 - `APP_UID` - UID of internal `app` user, default 1001
 
+### Working with Docker from inside container
+
+The `app` user is a member of the `docker` group. That allows it to interact with the Docker socket (`/var/run/docker.sock`) when it is explicitly mounted into the container. This is particularly useful for advanced use cases that require such functionality, such as monitoring other containers or accessing Docker APIs.
+
+Under standard usage, the Docker socket is not mounted into the container. In such cases, the docker group membership does not grant the app user any elevated privileges. The container remains secure and operates with an unprivileged user.
+
+#### Security Implications
+
+Mounting the Docker socket into a container can pose a security risk, as it effectively grants the container access to the Docker host and its containers. This is not specific to this image but is a general consideration when working with Docker.
+
+**Recommendation**: Only mount the Docker socket if it is necessary for your use case and you understand the associated risks.
+
 ## Example of multi-stage Dockerfile with baseimage:buildgo and baseimage:app
 
 ```dockerfile
@@ -106,3 +118,4 @@ FROM umputun/baseimage:scratch-latest
 COPY --from=build /build/app /srv/app
 
 CMD ["/srv/app", "param1", "param2"]
+```
