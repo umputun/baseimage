@@ -1,4 +1,4 @@
-all: build_app build_go
+all: build_app build_go build_scratch
 
 build_app:
 	docker build --pull -t umputun/baseimage:app-latest base.alpine -f base.alpine/Dockerfile
