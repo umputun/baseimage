@@ -1,4 +1,4 @@
-FROM ghcr.io/umputun/baseimage/app:latest as prep
+FROM ghcr.io/umputun/baseimage/app:latest AS prep
 
 RUN apk add -u tzdata ca-certificates build-base gcc
 
