@@ -4,13 +4,13 @@ _minimal docker base image to build and deploy services and applications._
 
 Three images provided:
 
-1. go build image - `umputun/baseimage:buildgo-latest`. For build stage, includes go compiler and linters. Alpine based.
-2. base application image `umputun/baseimage:app-latest`
-3. scratch-based application image `umputun/baseimage:scratch-latest`
+1. go build image - `ghcr.io/umputun/baseimage/buildgo:latest`. For build stage, includes go compiler and linters. Alpine based.
+2. base application image `ghcr.io/umputun/baseimage/app:latest`
+3. scratch-based application image `ghcr.io/umputun/baseimage/scratch:latest`
 
 ## Go Build Image
 
-Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:latest` intends to be used in multi-stage `Dockefile` to build go applications and services.
+Image `ghcr.io/umputun/baseimage/buildgo:latest` (or `umputun/baseimage:buildgo-latest`) intends to be used in multi-stage `Dockefile` to build go applications and services.
 
 * Relatively small, based on the official [golang:alpine](https://hub.docker.com/_/golang/) image
 * Enforces `CGO_ENABLED=0`
@@ -22,7 +22,7 @@ Image `umputun/baseimage:buildgo-latest` and `ghcr.io/umputun/baseimage/buildgo:
 
 ## Base Application Image
 
-Image `umputun/baseimage:app-latest` and `ghcr.io/umputun/baseimage/app:latest` designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
+Image `ghcr.io/umputun/baseimage/app:latest` (or `umputun/baseimage:app-latest`) designed as a lightweight, ready-to-use base for various services. It adds a few things to the regular [alpine image](https://hub.docker.com/_/alpine/).
 
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
 * Container command runs under `app` user with uid `$APP_UID` (default 1001)
@@ -53,7 +53,7 @@ Mounting the Docker socket into a container can pose a security risk, as it effe
 ## Example of multi-stage Dockerfile with baseimage:buildgo and baseimage:app
 
 ```dockerfile
-FROM umputun/baseimage:buildgo as build
+FROM ghcr.io/umputun/baseimage/buildgo:latest as build
 
 WORKDIR /build
 ADD . /build
@@ -67,7 +67,7 @@ RUN \
     go build -o app -ldflags "-X main.revision=$revision -s -w" .
 
 
-FROM umputun/baseimage:app
+FROM ghcr.io/umputun/baseimage/app:latest
 
 COPY --from=build /build/app /srv/app
 
@@ -83,7 +83,7 @@ To customize both TIME_ZONE and UID - `docker run -e TIME_ZONE=America/New_York 
 
 ## Base Scratch Image
 
-Image `umputun/baseimage:scratch-latest` (or `ghcr.io/umputun/baseimage/scratch`) adds a few extras to the `scratch` (empty) image:
+Image `ghcr.io/umputun/baseimage/scratch:latest` (or `umputun/baseimage:scratch-latest`) adds a few extras to the `scratch` (empty) image:
 
 - zoneinfo to allow change the timezone of the running application using the `TZ` environment variable
 - SSL certificates (ca-certificates)
@@ -98,7 +98,7 @@ The overall size of this image is about 512KB only, with 4MB download size due t
 
 ```dockerfile
 # Build Stage
-FROM umputun/baseimage:buildgo as build
+FROM ghcr.io/umputun/baseimage/buildgo:latest as build
 
 WORKDIR /build
 ADD . /build
@@ -113,7 +113,7 @@ RUN \
 
 
 # Scratch-based Application Image
-FROM umputun/baseimage:scratch-latest
+FROM ghcr.io/umputun/baseimage/scratch:latest
 
 COPY --from=build /build/app /srv/app
 
