@@ -28,16 +28,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up QEMU
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         uses: docker/setup-qemu-action@v3
 
       - name: set up Docker Buildx
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: available platforms
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         run: echo ${{ steps.buildx.outputs.platforms }}
 
       - name: build base.app image (no push)
@@ -87,16 +87,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up QEMU
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         uses: docker/setup-qemu-action@v3
 
       - name: set up Docker Buildx
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: available platforms
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         run: echo ${{ steps.buildx.outputs.platforms }}
 
       - name: build build.go image (no push)
@@ -146,16 +146,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up QEMU
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         uses: docker/setup-qemu-action@v3
 
       - name: set up Docker Buildx
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: available platforms
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         run: echo ${{ steps.buildx.outputs.platforms }}
 
       - name: build base.scratch image (no push)
