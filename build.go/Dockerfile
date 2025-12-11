@@ -8,9 +8,9 @@ ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
     GOVERALLS=0.0.12            \
-    GOLANGCI=2.4.0              \
+    GOLANGCI=2.7.2              \
     STATIK=0.1.7                \
-    GORELEASER=2.11.2
+    GORELEASER=2.13.1
 
 # install gcc in order to be able to go test package with -race
 RUN apk --no-cache add gcc libc-dev
