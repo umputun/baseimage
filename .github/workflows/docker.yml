@@ -1,16 +1,27 @@
-name: docker
+name: build
 
 on:
-  workflow_run:
-    workflows: [ci]
-    types: [completed]
+  push:
+    branches:
+    tags:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'dk.sh'
+      - 'Makefile'
+      - '.github/dependabot.yml'
+      - '.github/FUNDING.yml'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'dk.sh'
+      - 'Makefile'
+      - '.github/dependabot.yml'
+      - '.github/FUNDING.yml'
 
 jobs:
   build:
-    if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      (github.event.workflow_run.head_branch == 'master' ||
-       startsWith(github.event.workflow_run.head_branch, 'v'))
     strategy:
       fail-fast: false
       matrix:
@@ -38,13 +49,21 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: build only (PR validation)
+        if: github.event_name == 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.image.context }}
+          file: ${{ matrix.image.dockerfile }}
+          platforms: ${{ matrix.platform.os }}
+          push: false
+
       - name: login to ghcr.io
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -52,12 +71,14 @@ jobs:
           password: ${{ secrets.GITHUBPKG }}
 
       - name: login to dockerhub
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         uses: docker/login-action@v3
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: build and push to ghcr.io
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         id: build-ghcr
         uses: docker/build-push-action@v6
         with:
@@ -67,6 +88,7 @@ jobs:
           outputs: type=image,name=ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image.name }},push-by-digest=true,name-canonical=true,push=true
 
       - name: build and push to dockerhub
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         id: build-dockerhub
         uses: docker/build-push-action@v6
         with:
@@ -76,6 +98,7 @@ jobs:
           outputs: type=image,name=docker.io/${{ github.actor }}/baseimage,push-by-digest=true,name-canonical=true,push=true
 
       - name: export digests
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         run: |
           mkdir -p /tmp/digests/${{ matrix.image.name }}/ghcr /tmp/digests/${{ matrix.image.name }}/dockerhub
           digest_ghcr="${{ steps.build-ghcr.outputs.digest }}"
@@ -84,6 +107,7 @@ jobs:
           touch "/tmp/digests/${{ matrix.image.name }}/dockerhub/${digest_dockerhub#sha256:}"
 
       - name: upload ghcr digest
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ matrix.image.name }}-ghcr-${{ matrix.platform.artifact }}
@@ -91,6 +115,7 @@ jobs:
           retention-days: 1
 
       - name: upload dockerhub digest
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ matrix.image.name }}-dockerhub-${{ matrix.platform.artifact }}
@@ -98,6 +123,7 @@ jobs:
           retention-days: 1
 
   merge:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
     runs-on: ubuntu-latest
     needs: build
     strategy:
@@ -149,16 +175,14 @@ jobs:
 
       - name: set docker tags
         id: tags
-        env:
-          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-          IMAGE: ${{ matrix.image }}
         run: |
-          if [[ "$HEAD_BRANCH" == v* ]]; then
-            echo "ghcr_tags=-t ghcr.io/${{ github.actor }}/baseimage/${IMAGE}:${HEAD_BRANCH} -t ghcr.io/${{ github.actor }}/baseimage/${IMAGE}:latest" >> $GITHUB_OUTPUT
-            echo "dockerhub_tags=-t ${{ github.actor }}/baseimage:${IMAGE}-${HEAD_BRANCH} -t ${{ github.actor }}/baseimage:${IMAGE}-latest" >> $GITHUB_OUTPUT
+          ref="${GITHUB_REF##*/}"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            echo "ghcr_tags=-t ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}:${ref} -t ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}:latest" >> $GITHUB_OUTPUT
+            echo "dockerhub_tags=-t ${{ github.actor }}/baseimage:${{ matrix.image }}-${ref} -t ${{ github.actor }}/baseimage:${{ matrix.image }}-latest" >> $GITHUB_OUTPUT
           else
-            echo "ghcr_tags=-t ghcr.io/${{ github.actor }}/baseimage/${IMAGE}:${HEAD_BRANCH}" >> $GITHUB_OUTPUT
-            echo "dockerhub_tags=-t ${{ github.actor }}/baseimage:${IMAGE}-${HEAD_BRANCH}" >> $GITHUB_OUTPUT
+            echo "ghcr_tags=-t ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}:${ref}" >> $GITHUB_OUTPUT
+            echo "dockerhub_tags=-t ${{ github.actor }}/baseimage:${{ matrix.image }}-${ref}" >> $GITHUB_OUTPUT
           fi
 
       - name: create ghcr manifest and push

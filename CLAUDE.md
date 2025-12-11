@@ -41,16 +41,11 @@ make build_scratch_multi
 
 ## CI/CD
 
-Two GitHub Actions workflows:
-
-**ci.yml** - validation builds on all pushes and PRs:
-- Builds all 3 images in parallel (single-arch, no push)
-
-**docker.yml** - push builds triggered by ci.yml success:
-- Only runs on master branch or version tags (v*)
+Single GitHub Actions workflow (`.github/workflows/docker.yml`):
+- PRs: build validation only (3 images × 2 platforms, no push)
+- master/tags: build + push to ghcr.io and DockerHub
 - Uses native ARM64 runners (ubuntu-24.04-arm) - no QEMU
 - Parallel matrix: 3 images × 2 platforms (amd64, arm64)
-- Pushes to ghcr.io and DockerHub
 - Tags: `master` for master branch, tag name + `latest` for version tags
 
 ## Version Bumping
