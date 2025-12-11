@@ -15,7 +15,7 @@ Image `ghcr.io/umputun/baseimage/buildgo:latest` (or `umputun/baseimage:buildgo-
 * Relatively small, based on the official [golang:alpine](https://hub.docker.com/_/golang/) image
 * Enforces `CGO_ENABLED=0`
 * With fully installed and ready to use [golangci-lint](https://github.com/golangci/golangci-lint)
-* Add useful packages for building and testing - [testify](https://github.com/stretchr/testify), [mockery](https://github.com/vektra/mockery) and [moq](https://github.com/matryer/moq)
+* Add useful packages for building and testing - [moq](https://github.com/matryer/moq)
 * Includes [goreleaser](https://github.com/goreleaser/) and [statik](https://github.com/rakyll/statik)
 * With [goveralls](https://github.com/mattn/goveralls) for easy integration with coverage services and provided `coverage.sh` script to report coverage.
 * `/script/version.sh` script to make git-based version
@@ -27,7 +27,7 @@ Image `ghcr.io/umputun/baseimage/app:latest` (or `umputun/baseimage:app-latest`)
 * `ENTRYPOINT /init.sh` runs `CMD` via [dumb-init](https://github.com/Yelp/dumb-init/)
 * Container command runs under `app` user with uid `$APP_UID` (default 1001)
 * Optionally runs `/srv/init.sh` if provided by custom container
-* Packages `tzdata`, `curl`, `su-exec`, `ca-certificates` and `openssl` pre-installed
+* Packages `tzdata`, `curl`, `su-exec`, `ca-certificates` and `shared-mime-info` pre-installed
 * Adds the user `app` (uid=1001)
 * By default, enforces non-root execution of the command. Optional "/init-root.sh" can be used to run as root.
 
