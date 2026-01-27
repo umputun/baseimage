@@ -18,6 +18,35 @@ if [[ ${uid} -eq 0 ]]; then
     else
         echo "custom APP_UID not defined, using default uid=1001"
     fi
+
+    # set GID for docker group
+    if [[ "${DOCKER_GID}" -ne "999" ]]; then
+        echo "set custom DOCKER_GID=${DOCKER_GID}"
+        # check if another group already uses this GID
+        existing_group=$(getent group "${DOCKER_GID}" | cut -d: -f1)
+        if [[ -n "${existing_group}" && "${existing_group}" != "docker" ]]; then
+            # reuse existing group - add app to it for socket access
+            echo "GID ${DOCKER_GID} used by '${existing_group}', adding app to it"
+            if ! addgroup app "${existing_group}"; then
+                echo "error: failed to add app user to group '${existing_group}'"
+                exit 1
+            fi
+        else
+            # no collision - create docker group with requested GID
+            delgroup docker 2>/dev/null || true
+            if ! addgroup -g "${DOCKER_GID}" docker; then
+                echo "error: failed to create docker group with GID=${DOCKER_GID}"
+                exit 1
+            fi
+            if ! addgroup app docker; then
+                echo "error: failed to add app user to docker group"
+                exit 1
+            fi
+        fi
+    else
+        echo "custom DOCKER_GID not defined, using default gid=999"
+    fi
+
     chown -R app:app /srv /home/app
 fi
 

@@ -30,7 +30,7 @@ make build_scratch_multi
 
 - `base.alpine/` - Alpine runtime image
   - `Dockerfile` - image definition
-  - `files/init.sh` - entrypoint script, handles timezone and UID setup, drops to app user
+  - `files/init.sh` - entrypoint script, handles timezone, UID, and docker GID setup, drops to app user
   - `files/init-root.sh` - alternative entrypoint for root execution
 - `base.scratch/` - Scratch runtime image (builds /nop wait program from C)
 - `build.go/` - Go build image

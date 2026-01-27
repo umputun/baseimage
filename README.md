@@ -37,12 +37,24 @@ The container can be customized in runtime by setting environment from docker's 
 
 - `TIME_ZONE` - set container's TZ, default "America/Chicago". For scratch-based `TZ` should be used instead
 - `APP_UID` - UID of internal `app` user, default 1001
+- `DOCKER_GID` - GID of the docker group, default 999. Useful when mounting docker socket with a different GID on the host
 
 ### Working with Docker from inside container
 
 The `app` user is a member of the `docker` group. That allows it to interact with the Docker socket (`/var/run/docker.sock`) when it is explicitly mounted into the container. This is particularly useful for advanced use cases that require such functionality, such as monitoring other containers or accessing Docker APIs.
 
 Under standard usage, the Docker socket is not mounted into the container. In such cases, the docker group membership does not grant the app user any elevated privileges. The container remains secure and operates with an unprivileged user.
+
+When the host's docker group has a different GID than the container's default (999), set `DOCKER_GID` to match the host's GID:
+
+```bash
+# find your host docker GID
+stat -c %g /var/run/docker.sock  # Linux
+stat -f %g /var/run/docker.sock  # macOS
+
+# run with matching GID
+docker run -e DOCKER_GID=998 -v /var/run/docker.sock:/var/run/docker.sock <image>
+```
 
 #### Security Implications
 
