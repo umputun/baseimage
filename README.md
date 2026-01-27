@@ -56,6 +56,8 @@ stat -f %g /var/run/docker.sock  # macOS
 docker run -e DOCKER_GID=998 -v /var/run/docker.sock:/var/run/docker.sock <image>
 ```
 
+**Note on GID collisions**: If a group with the requested `DOCKER_GID` already exists inside the container, the `app` user will be added to that existing group instead of creating a new `docker` group. Socket access is still granted via the matching GID, but the group name may differ.
+
 #### Security Implications
 
 Mounting the Docker socket into a container can pose a security risk, as it effectively grants the container access to the Docker host and its containers. This is not specific to this image but is a general consideration when working with Docker.
