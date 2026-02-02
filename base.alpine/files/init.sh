@@ -47,7 +47,10 @@ if [[ ${uid} -eq 0 ]]; then
         echo "custom DOCKER_GID not defined, using default gid=999"
     fi
 
-    chown -R app:app /srv /home/app
+    chown -R app:app /srv
+    if [[ "${SKIP_HOME_CHOWN}" != "1" ]]; then
+        chown -R app:app /home/app
+    fi
 fi
 
 
