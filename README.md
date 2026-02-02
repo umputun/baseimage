@@ -39,6 +39,7 @@ The container can be customized in runtime by setting environment from docker's 
 - `APP_UID` - UID of internal `app` user, default 1001
 - `DOCKER_GID` - GID of the docker group, default 999. Useful when mounting docker socket with a different GID on the host
 - `SKIP_HOME_CHOWN` - set to "1" to skip chown on /home/app, useful when mounting read-only config volumes
+- `INIT_QUIET` - set to "1" to suppress init script informational messages
 
 ### Working with Docker from inside container
 
