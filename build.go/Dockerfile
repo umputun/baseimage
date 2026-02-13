@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine
+FROM golang:1.26-alpine
 
 LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
 # enables automatic changelog generation by tools like Dependabot
@@ -8,9 +8,9 @@ ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
     GOVERALLS=0.0.12            \
-    GOLANGCI=2.7.2              \
+    GOLANGCI=2.9.0              \
     STATIK=0.1.7                \
-    GORELEASER=2.13.1
+    GORELEASER=2.13.3
 
 # install gcc in order to be able to go test package with -race
 RUN apk --no-cache add gcc libc-dev

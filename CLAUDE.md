@@ -54,4 +54,4 @@ Go build image version is controlled by env vars in `build.go/Dockerfile`:
 - `GOLANGCI` - golangci-lint version
 - `GORELEASER` - goreleaser version
 - `GOVERALLS`, `STATIK` - other tool versions
-- Base Go version in FROM directive (e.g., `golang:1.25-alpine`)
+- Base Go version in FROM directive (e.g., `golang:1.26-alpine`)
