@@ -13,9 +13,9 @@ build_go_multi:
 	docker buildx build --platform linux/amd64,linux/arm64 --pull -t umputun/baseimage:buildgo-latest -t ghcr.io/umputun/baseimage/buildgo:latest build.go -f build.go/Dockerfile
 
 build_scratch:
-	docker build --pull -t umputun/baseimage:scratch-latest -t ghcr.io/umputun/baseimage/scratch:latest build.go -f base.scratch/Dockerfile
+	docker build --pull -t umputun/baseimage:scratch-latest -t ghcr.io/umputun/baseimage/scratch:latest base.scratch -f base.scratch/Dockerfile
 
 build_scratch_multi:
-	docker buildx build --platform linux/amd64,linux/arm64 --pull -t umputun/baseimage:scratch-latest -t ghcr.io/umputun/baseimage/scratch:latest build.go -f base.scratch/Dockerfile
+	docker buildx build --platform linux/amd64,linux/arm64 --pull -t umputun/baseimage:scratch-latest -t ghcr.io/umputun/baseimage/scratch:latest base.scratch -f base.scratch/Dockerfile
 
 .PHONY: all

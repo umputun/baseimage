@@ -104,6 +104,7 @@ Image `ghcr.io/umputun/baseimage/scratch:latest` (or `umputun/baseimage:scratch-
 - zoneinfo to allow change the timezone of the running application using the `TZ` environment variable
 - SSL certificates (ca-certificates)
 - `/etc/passwd` and `/etc/groups` with `app` user and group added (UID:1001, GID:1001)
+- `/tmp` directory with sticky bit permissions (1777), writable by any user
 - `/nop` program to wait forever and do nothing
 
 Container sets user to `app` and working directory to `/srv`, no entrypoint set. In order to change time zone `TZ` env can be used.

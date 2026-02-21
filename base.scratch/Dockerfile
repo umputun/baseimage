@@ -21,6 +21,7 @@ COPY --from=prep /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=prep /etc/passwd /etc/passwd
 COPY --from=prep /etc/group /etc/group
 COPY --from=prep /tmp/nop /nop
+ADD tmp.tar /
 
 USER app
 WORKDIR /srv
