@@ -9,6 +9,13 @@ RUN \
     gcc -static -O3 /tmp/pause.c -o /tmp/nop && \
     ls -la /tmp/nop
 
+# generate minimal passwd and group with only root and app entries
+RUN echo "root:x:0:0:root:/root:/sbin/nologin" > /tmp/passwd && \
+    echo "app:x:1001:1001:app:/home/app:/sbin/nologin" >> /tmp/passwd
+
+RUN echo "root:x:0:" > /tmp/group && \
+    echo "app:x:1001:" >> /tmp/group
+
 FROM scratch
 
 LABEL org.opencontainers.image.authors="Umputun <umputun@gmail.com>"
@@ -18,8 +25,8 @@ LABEL org.opencontainers.image.source="https://github.com/umputun/baseimage"
 ENV TZ=America/Chicago
 COPY --from=prep /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=prep /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=prep /etc/passwd /etc/passwd
-COPY --from=prep /etc/group /etc/group
+COPY --from=prep /tmp/passwd /etc/passwd
+COPY --from=prep /tmp/group /etc/group
 COPY --from=prep /tmp/nop /nop
 ADD tmp.tar /
 

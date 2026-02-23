@@ -34,7 +34,7 @@ make build_scratch_multi
   - `files/init-root.sh` - alternative entrypoint for root execution
 - `base.scratch/` - Scratch runtime image (builds /nop wait program from C)
 - `build.go/` - Go build image
-  - `Dockerfile` - Go 1.25-alpine with tools (golangci-lint, moq, goreleaser, statik, goveralls)
+  - `Dockerfile` - Go 1.26-alpine with tools (golangci-lint, moq, goreleaser, statik, goveralls)
   - `git-rev.sh` - parse git revision without .git/objects (for minimal builds)
   - `coverage.sh` - coverage reporting script
 - `dk.sh` - debug helper: injects busybox shell into scratch containers

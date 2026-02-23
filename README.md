@@ -103,7 +103,7 @@ Image `ghcr.io/umputun/baseimage/scratch:latest` (or `umputun/baseimage:scratch-
 
 - zoneinfo to allow change the timezone of the running application using the `TZ` environment variable
 - SSL certificates (ca-certificates)
-- `/etc/passwd` and `/etc/groups` with `app` user and group added (UID:1001, GID:1001)
+- `/etc/passwd` and `/etc/group` with `app` user and group added (UID:1001, GID:1001)
 - `/tmp` directory with sticky bit permissions (1777), writable by any user
 - `/nop` program to wait forever and do nothing
 
@@ -142,7 +142,9 @@ CMD ["/srv/app", "param1", "param2"]
 The `dk.sh` is a simple script to get a shell inside containers that don't have one (like scratch-based containers). It works by temporarily copying BusyBox into the container and cleaning it up after you're done.
 
 ```
-./dk.sh <container_name>
+./dk.sh [-f] <container_name>
 ```
+
+Use `-f` to force busybox injection even when a shell is already available in the container.
 
 This lets you inspect and debug the container's environment easily, without leaving any leftovers.
