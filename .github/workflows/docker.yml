@@ -108,7 +108,7 @@ jobs:
 
       - name: upload ghcr digest
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: digests-${{ matrix.image.name }}-ghcr-${{ matrix.platform.artifact }}
           path: /tmp/digests/${{ matrix.image.name }}/ghcr/*
@@ -116,7 +116,7 @@ jobs:
 
       - name: upload dockerhub digest
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: digests-${{ matrix.image.name }}-dockerhub-${{ matrix.platform.artifact }}
           path: /tmp/digests/${{ matrix.image.name }}/dockerhub/*
@@ -131,14 +131,14 @@ jobs:
         image: [app, buildgo, scratch]
     steps:
       - name: download ghcr digests
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: /tmp/digests/ghcr
           pattern: digests-${{ matrix.image }}-ghcr-*
           merge-multiple: true
 
       - name: download dockerhub digests
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: /tmp/digests/dockerhub
           pattern: digests-${{ matrix.image }}-dockerhub-*
