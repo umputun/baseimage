@@ -2,8 +2,8 @@ name: build
 
 on:
   push:
-    branches:
-    tags:
+    branches: ["**"]
+    tags: ["**"]
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
@@ -19,6 +19,13 @@ on:
       - 'Makefile'
       - '.github/dependabot.yml'
       - '.github/FUNDING.yml'
+
+permissions:
+  contents: read
+
+env:
+  GHCR_OWNER: ${{ github.repository_owner }}
+  DOCKERHUB_OWNER: ${{ vars.DOCKERHUB_OWNER || github.repository_owner }}
 
 jobs:
   build:
@@ -67,14 +74,14 @@ jobs:
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ env.GHCR_OWNER }}
           password: ${{ secrets.GITHUBPKG }}
 
       - name: login to dockerhub
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         uses: docker/login-action@v4
         with:
-          username: ${{ github.actor }}
+          username: ${{ env.DOCKERHUB_OWNER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: build and push to ghcr.io
@@ -85,7 +92,7 @@ jobs:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
           platforms: ${{ matrix.platform.os }}
-          outputs: type=image,name=ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image.name }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=ghcr.io/${{ env.GHCR_OWNER }}/baseimage/${{ matrix.image.name }},push-by-digest=true,name-canonical=true,push=true
 
       - name: build and push to dockerhub
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
@@ -95,7 +102,7 @@ jobs:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
           platforms: ${{ matrix.platform.os }}
-          outputs: type=image,name=docker.io/${{ github.actor }}/baseimage,push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=docker.io/${{ env.DOCKERHUB_OWNER }}/baseimage,push-by-digest=true,name-canonical=true,push=true
 
       - name: export digests
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
@@ -124,6 +131,9 @@ jobs:
 
   merge:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     needs: build
     strategy:
@@ -164,13 +174,13 @@ jobs:
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ env.GHCR_OWNER }}
           password: ${{ secrets.GITHUBPKG }}
 
       - name: login to dockerhub
         uses: docker/login-action@v4
         with:
-          username: ${{ github.actor }}
+          username: ${{ env.DOCKERHUB_OWNER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: set docker tags
@@ -178,21 +188,23 @@ jobs:
         run: |
           ref="${GITHUB_REF##*/}"
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
-            echo "ghcr_tags=-t ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}:${ref} -t ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}:latest" >> $GITHUB_OUTPUT
-            echo "dockerhub_tags=-t ${{ github.actor }}/baseimage:${{ matrix.image }}-${ref} -t ${{ github.actor }}/baseimage:${{ matrix.image }}-latest" >> $GITHUB_OUTPUT
+            echo "ghcr_tags=-t ghcr.io/${GHCR_OWNER}/baseimage/${{ matrix.image }}:${ref} -t ghcr.io/${GHCR_OWNER}/baseimage/${{ matrix.image }}:latest" >> "$GITHUB_OUTPUT"
+            echo "dockerhub_tags=-t ${DOCKERHUB_OWNER}/baseimage:${{ matrix.image }}-${ref} -t ${DOCKERHUB_OWNER}/baseimage:${{ matrix.image }}-latest" >> "$GITHUB_OUTPUT"
           else
-            echo "ghcr_tags=-t ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}:${ref}" >> $GITHUB_OUTPUT
-            echo "dockerhub_tags=-t ${{ github.actor }}/baseimage:${{ matrix.image }}-${ref}" >> $GITHUB_OUTPUT
+            echo "ghcr_tags=-t ghcr.io/${GHCR_OWNER}/baseimage/${{ matrix.image }}:${ref}" >> "$GITHUB_OUTPUT"
+            echo "dockerhub_tags=-t ${DOCKERHUB_OWNER}/baseimage:${{ matrix.image }}-${ref}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: create ghcr manifest and push
         working-directory: /tmp/digests/ghcr
         run: |
+          # shellcheck disable=SC2046,SC2086 # both expansions have to split into separate arguments
           docker buildx imagetools create ${{ steps.tags.outputs.ghcr_tags }} \
-            $(printf 'ghcr.io/${{ github.actor }}/baseimage/${{ matrix.image }}@sha256:%s ' *)
+            $(printf "ghcr.io/${GHCR_OWNER}/baseimage/${{ matrix.image }}@sha256:%s " *)
 
       - name: create dockerhub manifest and push
         working-directory: /tmp/digests/dockerhub
         run: |
+          # shellcheck disable=SC2046,SC2086 # both expansions have to split into separate arguments
           docker buildx imagetools create ${{ steps.tags.outputs.dockerhub_tags }} \
-            $(printf 'docker.io/${{ github.actor }}/baseimage@sha256:%s ' *)
+            $(printf "docker.io/${DOCKERHUB_OWNER}/baseimage@sha256:%s " *)
