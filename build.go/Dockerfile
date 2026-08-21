@@ -8,7 +8,7 @@ ENV \
     TIME_ZONE=America/Chicago   \
     CGO_ENABLED=0               \
     GOVERALLS=0.0.12            \
-    GOLANGCI=2.9.0              \
+    GOLANGCI=2.12.2             \
     STATIK=0.1.7                \
     GORELEASER=2.13.3
 
