@@ -34,7 +34,7 @@ make build_scratch_multi
   - `files/init-root.sh` - alternative entrypoint for root execution
 - `base.scratch/` - Scratch runtime image (builds /nop wait program from C)
 - `build.go/` - Go build image
-  - `Dockerfile` - Go 1.26-alpine with tools (golangci-lint, moq, goreleaser, statik, goveralls)
+  - `Dockerfile` - Go 1.27-alpine with tools (golangci-lint, moq, goreleaser, statik, goveralls)
   - `git-rev.sh` - parse git revision without .git/objects (for minimal builds)
   - `coverage.sh` - coverage reporting script
 - `dk.sh` - debug helper: injects busybox shell into scratch containers
@@ -54,4 +54,4 @@ Go build image version is controlled by env vars in `build.go/Dockerfile`:
 - `GOLANGCI` - golangci-lint version
 - `GORELEASER` - goreleaser version
 - `GOVERALLS`, `STATIK` - other tool versions
-- Base Go version in FROM directive (e.g., `golang:1.26-alpine`)
+- Base Go version in FROM directive (e.g., `golang:1.27-alpine`)
