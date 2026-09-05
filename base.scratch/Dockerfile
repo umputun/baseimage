@@ -9,12 +9,13 @@ RUN \
     gcc -static -O3 /tmp/pause.c -o /tmp/nop && \
     ls -la /tmp/nop
 
-# generate minimal passwd and group with only root and app entries
+# generate minimal passwd and group files; docker group matches base.alpine DOCKER_GID=999
 RUN echo "root:x:0:0:root:/root:/sbin/nologin" > /tmp/passwd && \
     echo "app:x:1001:1001:app:/home/app:/sbin/nologin" >> /tmp/passwd
 
 RUN echo "root:x:0:" > /tmp/group && \
-    echo "app:x:1001:" >> /tmp/group
+    echo "app:x:1001:" >> /tmp/group && \
+    echo "docker:x:999:app" >> /tmp/group
 
 FROM scratch
 

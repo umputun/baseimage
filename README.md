@@ -103,11 +103,13 @@ Image `ghcr.io/umputun/baseimage/scratch:latest` (or `umputun/baseimage:scratch-
 
 - zoneinfo to allow change the timezone of the running application using the `TZ` environment variable
 - SSL certificates (ca-certificates)
-- `/etc/passwd` and `/etc/group` with `app` user and group added (UID:1001, GID:1001)
+- `/etc/passwd` and `/etc/group` with `app` user and group added (UID:1001, GID:1001), plus a `docker` group (GID:999) with `app` as a member
 - `/tmp` directory with sticky bit permissions (1777), writable by any user
 - `/nop` program to wait forever and do nothing
 
 Container sets user to `app` and working directory to `/srv`, no entrypoint set. In order to change time zone `TZ` env can be used.
+
+The `docker` group gives `app` access to a mounted `/var/run/docker.sock` when the host's docker GID is 999, the alpine image's default. There is no init script, so `DOCKER_GID` has no effect and the GID is fixed at build time; for a different host GID add it at runtime with `--group-add <gid>` or `group_add: ["<gid>"]` in compose. An explicit `user: 1001:1001` (or `--user 1001:1001`) drops supplementary groups, so such containers need `group_add` even with GID 999. Membership also grants access to any other mounted file with GID 999, according to its group permissions.
 
 The overall size of this image is about 512KB only, with 4MB download size due to parent layers.
 
