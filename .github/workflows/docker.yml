@@ -60,14 +60,20 @@ jobs:
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: build only (PR validation)
-        if: github.event_name == 'pull_request'
+      - name: build only (PR validation, app smoke test on master)
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.image.name == 'app')
         uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.image.context }}
           file: ${{ matrix.image.dockerfile }}
           platforms: ${{ matrix.platform.os }}
           push: false
+          load: ${{ matrix.image.name == 'app' }}
+          tags: ${{ matrix.image.name == 'app' && 'baseimage-app:test' || '' }}
+
+      - name: smoke test the app image
+        if: matrix.image.name == 'app' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master'))
+        run: bash base.alpine/test.sh baseimage-app:test
 
       - name: login to ghcr.io
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
