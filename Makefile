@@ -18,4 +18,7 @@ build_scratch:
 build_scratch_multi:
 	docker buildx build --platform linux/amd64,linux/arm64 --pull -t umputun/baseimage:scratch-latest -t ghcr.io/umputun/baseimage/scratch:latest base.scratch -f base.scratch/Dockerfile
 
+test_app:
+	bash base.alpine/test.sh umputun/baseimage:app-latest
+
 .PHONY: all
